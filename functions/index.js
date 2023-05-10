@@ -28,86 +28,15 @@ var testinstance = new Razorpay({
     key_secret: test_key_secret
 });
 
-exports.createOrder = functions.https.onRequest((req, res) => {
-    return cors(req, res, () => {
-        var options = {
-            amount: req.body.amount,
-            currency: "INR",
-            receipt: req.body.receipt
-        };
-        instance.orders.create(options, (err, order) => {
-            order ? res.status(200).send(order) : res.status(500).send(err);
-        });
-    });
-});
 
-exports.capturePayments = functions.https.onRequest((req, res) => {
-    return cors(req, res, () => {
-        request(
-            {
-                method: "POST",
-                url: `https://${key_id}:${key_secret}@api.razorpay.com/v1/payments/${
-                    req.body.payment_id
-                }/capture`,
-                form: {
-                    amount: req.body.amount
-                }
-            },
-            (error, response, body) => {
-                response
-                    ? res.status(200).send({
-                        res: response,
-                        req: req.body,
-                        body: body
-                    })
-                    : res.status(500).send(error);
-            }
-        );
-    });
-});
-
-exports.testcreateOrder = functions.https.onRequest((req, res) => {
-    return cors(req, res, () => {
-        var options = {
-            amount: req.body.amount,
-            currency: "INR",
-            receipt: req.body.receipt
-        };
-        testinstance.orders.create(options, (err, order) => {
-            order ? res.status(200).send(order) : res.status(500).send(err);
-        });
-    });
-});
-
-exports.testcapturePayments = functions.https.onRequest((req, res) => {
-    return cors(req, res, () => {
-        request(
-            {
-                method: "POST",
-                url: `https://${test_key_id}:${test_key_secret}@api.razorpay.com/v1/payments/${
-                    req.body.payment_id
-                }/capture`,
-                form: {
-                    amount: req.body.amount
-                }
-            },
-            (error, response, body) => {
-                response
-                    ? res.status(200).send({
-                        res: response,
-                        req: req.body,
-                        body: body
-                    })
-                    : res.status(500).send(error);
-            }
-        );
-    });
-});
 //For Payment request
 exports.getpayments = functions.https.onRequest((req, res) => {
-    return instance.payments.all()
+    return instance.all()
 
 })
+exports.geTestpayments = functions.https.onRequest((req, res) => {
+    return testinstance.all()
 
+})
 
 //All donations made to us are eligible for tax exception under 80G of IT Act
